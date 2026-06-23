@@ -114,18 +114,10 @@ function StorePage() {
       </header>
 
       <main className="px-3 sm:px-6 pb-12 max-w-6xl mx-auto">
+        <BannerCarousel />
+
         <BroadcastBanner />
 
-        <section className="text-center py-8 sm:py-12">
-          <h1 className="font-display text-4xl sm:text-6xl tracking-tight font-semibold text-cyan-50">
-            iboystore
-          </h1>
-          <p className="text-sm sm:text-base text-cyan-100/60 mt-3 max-w-md mx-auto font-light">
-            Koleksi produk digital terkurasi. Beli langsung via WhatsApp.
-          </p>
-        </section>
-
-        <BannerCarousel />
 
         {filtered.length === 0 && (
           <div className="glass rounded-2xl py-16 text-center text-cyan-100/60">
