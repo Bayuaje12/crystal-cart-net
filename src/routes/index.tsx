@@ -128,7 +128,7 @@ function StorePage() {
           </div>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
           {filtered.map((p) => (
             <article
               key={p.id}
