@@ -132,7 +132,7 @@ function StorePage() {
           {filtered.map((p) => (
             <article
               key={p.id}
-              className="glass rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:border-cyan-400/40"
+              className="glass rounded-lg overflow-hidden flex flex-col group transition-all duration-300 hover:border-cyan-400/40"
             >
               <div className="relative aspect-square overflow-hidden bg-black/30">
                 <img
@@ -143,7 +143,7 @@ function StorePage() {
                 />
                 {p.label && (
                   <span
-                    className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-900"
+                    className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider text-slate-900"
                     style={{
                       background: "linear-gradient(135deg, oklch(0.92 0.14 195), oklch(0.80 0.16 195))",
                       boxShadow: "0 0 10px rgba(34,211,238,0.55)",
@@ -153,18 +153,18 @@ function StorePage() {
                   </span>
                 )}
               </div>
-              <div className="p-2 sm:p-3 flex flex-col gap-1.5 flex-1">
-                <h3 className="text-[11px] sm:text-xs font-medium text-cyan-50 line-clamp-2 leading-snug min-h-[2.4em]">
+              <div className="p-2 flex flex-col gap-1 flex-1">
+                <h3 className="text-[10px] sm:text-[11px] font-medium text-cyan-50 line-clamp-2 leading-snug min-h-[2.2em]">
                   {p.name}
                 </h3>
-                <p className="font-display text-xs sm:text-sm font-semibold text-cyan-300">
+                <p className="font-display text-[10px] sm:text-xs font-semibold text-cyan-300">
                   {formatIDR(p.price)}
                 </p>
                 <a
                   href={buildWaUrl(p)}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-auto w-full rounded-lg py-1.5 text-[11px] sm:text-xs font-semibold text-center text-cyan-50 border border-cyan-400/40 bg-white/[0.05] backdrop-blur-md transition-all hover:bg-cyan-400/20 hover:border-cyan-300 hover:shadow-[0_0_16px_rgba(34,211,238,0.55)] active:scale-95"
+                  className="mt-auto w-full rounded-md py-1 text-[10px] font-semibold text-center text-cyan-50 border border-cyan-400/40 bg-white/[0.05] backdrop-blur-md transition-all hover:bg-cyan-400/20 hover:border-cyan-300 hover:shadow-[0_0_16px_rgba(34,211,238,0.55)] active:scale-95"
                 >
                   Beli
                 </a>
