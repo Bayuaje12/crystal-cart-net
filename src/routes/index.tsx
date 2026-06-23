@@ -5,14 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { StatusWidgets } from "@/components/status-widgets";
 import { BroadcastBanner } from "@/components/broadcast-banner";
 import { DeveloperModal } from "@/components/developer-modal";
-import { PurchaseModal } from "@/components/purchase-modal";
-import { formatIDR, type Product } from "@/lib/products";
+import { BannerCarousel } from "@/components/banner-carousel";
+import { formatIDR, buildWaUrl, type Product } from "@/lib/products";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "iboystore — Katalog Produk Digital" },
-      { name: "description", content: "iboystore — toko digital premium. Pembelian cepat via WhatsApp dengan QRIS & Dana." },
+      { name: "description", content: "iboystore — toko digital premium. Pembelian cepat via WhatsApp." },
       { property: "og:title", content: "iboystore" },
       { property: "og:description", content: "Toko digital premium. Beli cepat via WhatsApp." },
     ],
@@ -27,7 +27,6 @@ function StorePage() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortMode>("default");
   const [devOpen, setDevOpen] = useState(false);
-  const [buyProduct, setBuyProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -42,11 +41,7 @@ function StorePage() {
     load();
     const channel = supabase
       .channel("products-stream")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "products" },
-        () => load()
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => load())
       .subscribe();
     return () => {
       active = false;
@@ -68,30 +63,21 @@ function StorePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Top bar — status widgets sit cleanly above the nav */}
       <div className="px-3 sm:px-6 pt-3 max-w-6xl mx-auto flex justify-end">
         <StatusWidgets />
       </div>
 
-      {/* Navbar */}
       <header className="sticky top-2 z-30 px-3 sm:px-6 pt-2 pb-2 max-w-6xl mx-auto">
         <nav className="glass-strong rounded-2xl px-3 sm:px-4 py-2.5 flex items-center gap-2 sm:gap-3">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img
-              src="https://files.catbox.moe/3whqvw.png"
-              alt="iboystore"
-              className="w-8 h-8 object-contain"
-            />
+            <img src="https://files.catbox.moe/3whqvw.png" alt="iboystore" className="w-8 h-8 object-contain" />
             <span className="hidden sm:inline font-display text-sm tracking-tight text-cyan-50/90 font-semibold">
               iboystore
             </span>
           </Link>
 
           <div className="flex-1 relative min-w-0">
-            <Search
-              size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-200/60"
-            />
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-200/60" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -130,8 +116,7 @@ function StorePage() {
       <main className="px-3 sm:px-6 pb-12 max-w-6xl mx-auto">
         <BroadcastBanner />
 
-        {/* Hero */}
-        <section className="text-center py-10 sm:py-16">
+        <section className="text-center py-8 sm:py-12">
           <h1 className="font-display text-4xl sm:text-6xl tracking-tight font-semibold text-cyan-50">
             iboystore
           </h1>
@@ -140,49 +125,57 @@ function StorePage() {
           </p>
         </section>
 
-        {/* Products */}
+        <BannerCarousel />
+
         {filtered.length === 0 && (
           <div className="glass rounded-2xl py-16 text-center text-cyan-100/60">
             <ShoppingBag className="mx-auto mb-3 text-cyan-400/50" size={32} />
             <p className="text-sm">
-              {products.length === 0
-                ? "Belum ada produk. Tambahkan dari /admin."
-                : "Tidak ada produk yang cocok."}
+              {products.length === 0 ? "Belum ada produk. Tambahkan dari /admin." : "Tidak ada produk yang cocok."}
             </p>
           </div>
         )}
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {filtered.map((p) => (
             <article
               key={p.id}
-              className="glass rounded-2xl overflow-hidden flex flex-col group transition-all duration-300 hover:border-cyan-400/30"
+              className="glass rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:border-cyan-400/40"
             >
-              <div className="aspect-square overflow-hidden bg-black/30">
+              <div className="relative aspect-square overflow-hidden bg-black/30">
                 <img
                   src={p.image_url}
                   alt={p.name}
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                {p.label && (
+                  <span
+                    className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-900"
+                    style={{
+                      background: "linear-gradient(135deg, oklch(0.92 0.14 195), oklch(0.80 0.16 195))",
+                      boxShadow: "0 0 10px rgba(34,211,238,0.55)",
+                    }}
+                  >
+                    {p.label}
+                  </span>
+                )}
               </div>
-              <div className="p-3 sm:p-4 flex flex-col gap-2 flex-1">
-                <h3 className="text-sm font-medium text-cyan-50 line-clamp-2 leading-snug">
+              <div className="p-2 sm:p-3 flex flex-col gap-1.5 flex-1">
+                <h3 className="text-[11px] sm:text-xs font-medium text-cyan-50 line-clamp-2 leading-snug min-h-[2.4em]">
                   {p.name}
                 </h3>
-                <p className="font-display text-base font-semibold text-cyan-300">
+                <p className="font-display text-xs sm:text-sm font-semibold text-cyan-300">
                   {formatIDR(p.price)}
                 </p>
-                <button
-                  onClick={() => setBuyProduct(p)}
-                  className="mt-auto w-full rounded-xl py-2 text-sm font-semibold text-slate-900 transition-all hover:brightness-110"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, oklch(0.90 0.13 195), oklch(0.78 0.14 195))",
-                  }}
+                <a
+                  href={buildWaUrl(p)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-auto w-full rounded-lg py-1.5 text-[11px] sm:text-xs font-semibold text-center text-cyan-50 border border-cyan-400/40 bg-white/[0.05] backdrop-blur-md transition-all hover:bg-cyan-400/20 hover:border-cyan-300 hover:shadow-[0_0_16px_rgba(34,211,238,0.55)] active:scale-95"
                 >
                   Beli
-                </button>
+                </a>
               </div>
             </article>
           ))}
@@ -194,11 +187,6 @@ function StorePage() {
       </footer>
 
       <DeveloperModal open={devOpen} onClose={() => setDevOpen(false)} />
-      <PurchaseModal
-        open={!!buyProduct}
-        onClose={() => setBuyProduct(null)}
-        product={buyProduct}
-      />
     </div>
   );
 }
