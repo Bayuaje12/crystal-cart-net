@@ -87,6 +87,7 @@ function AdminDashboard() {
   const [price, setPrice] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [wa, setWa] = useState("");
+  const [label, setLabel] = useState("");
   const [broadcastMsg, setBroadcastMsg] = useState("");
   const [status, setStatus] = useState("");
 
@@ -115,12 +116,13 @@ function AdminDashboard() {
       price: p,
       image_url: imageUrl,
       wa_number: wa.replace(/\D/g, ""),
+      label: label.trim() ? label.trim().toUpperCase() : null,
     } as never);
     if (error) {
       setStatus("Gagal: " + error.message);
     } else {
       setStatus("Produk ditambahkan ✓");
-      setName(""); setPrice(""); setImageUrl(""); setWa("");
+      setName(""); setPrice(""); setImageUrl(""); setWa(""); setLabel("");
       loadProducts();
     }
     setTimeout(() => setStatus(""), 2500);
@@ -182,6 +184,7 @@ function AdminDashboard() {
             <AdminInput label="Harga (IDR)" value={price} onChange={setPrice} inputMode="numeric" />
             <AdminInput label="URL Gambar" value={imageUrl} onChange={setImageUrl} />
             <AdminInput label="Nomor WhatsApp (6281...)" value={wa} onChange={setWa} inputMode="tel" />
+            <AdminInput label="Label Produk (opsional, mis. TERBARU)" value={label} onChange={setLabel} />
             <button
               type="submit"
               className="rounded-xl py-2.5 text-sm font-semibold text-slate-900 mt-1"
