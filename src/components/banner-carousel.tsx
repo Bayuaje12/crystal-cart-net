@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 
-const BANNERS = [
-  "https://files.catbox.moe/v50i58.png",
-  "https://files.catbox.moe/kwwzmj.png",
-  "https://files.catbox.moe/rk6rku.png",
-];
+const BANNERS = ["https://files.catbox.moe/v50i58.png"];
 
 export function BannerCarousel() {
   const [index, setIndex] = useState(0);
